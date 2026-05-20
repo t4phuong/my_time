@@ -1,0 +1,68 @@
+<odoo>
+    <record id="t4_my_time_shift_template_list_view" model="ir.ui.view">
+        <field name="name">t4.my.time.shift.template.list</field>
+        <field name="model">t4.shift.template</field>
+        <field name="arch" type="xml">
+            <list string="Shift Templates">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="work_entry_type_id"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <field name="max_employee"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="t4_my_time_shift_template_form_view" model="ir.ui.view">
+        <field name="name">t4.my.time.shift.template.form</field>
+        <field name="model">t4.shift.template</field>
+        <field name="arch" type="xml">
+            <form string="Shift Template">
+                <sheet>
+                    <group string="Basic Information">
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="work_entry_type_id"/>
+                        </group>
+                    </group>
+
+                    <group string="Assignment &amp; Schedule" col="2">
+                        <group string="Assignment">
+                            <field name="company_id"/>
+                            <field name="department_id"/>
+                            <field name="job_id"/>
+                        </group>
+
+                        <group string="Schedule">
+                            <field name="start_time" widget="float_time"/>
+                            <field name="end_time" widget="float_time"/>
+                            <field name="max_employee"/>
+                        </group>
+                    </group>
+
+                    <group string="Other Settings">
+                        <field name="active"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="t4_my_time_shift_template_action" model="ir.actions.act_window">
+        <field name="name">Shift Template</field>
+        <field name="res_model">t4.shift.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('t4_my_time_shift_template_list_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('t4_my_time_shift_template_form_view')})
+        ]"/>
+    </record>
+</odoo>

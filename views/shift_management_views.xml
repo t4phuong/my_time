@@ -1,0 +1,111 @@
+<odoo>
+    <record id="t4_my_time_shift_management_calendar_view" model="ir.ui.view">
+        <field name="name">t4.my.time.shift.management.calendar</field>
+        <field name="model">t4.shift</field>
+        <field name="arch" type="xml">
+            <calendar string="Shift Planning"
+                      date_start="date_start"
+                      date_stop="date_stop"
+                      color="work_entry_type_id"
+                      mode="week"
+                      quick_create="false"
+                      event_open_popup="false">
+            </calendar>
+        </field>
+    </record>
+
+    <record id="t4_my_time_shift_management_list_view" model="ir.ui.view">
+        <field name="name">t4.my.time.shift.management.list</field>
+        <field name="model">t4.shift</field>
+        <field name="arch" type="xml">
+            <list string="Shifts">
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_stop"/>
+                <field name="template_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="work_entry_type_id"/>
+                <field name="max_employee"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="t4_my_time_shift_management_form_view" model="ir.ui.view">
+        <field name="name">t4.my.time.shift.management.form</field>
+        <field name="model">t4.shift</field>
+        <field name="arch" type="xml">
+            <form string="Shift">
+                <header>
+                    <button name="action_confirm"
+                        type="object"
+                        string="Confirm"
+                        class="btn-primary"
+                    invisible="state != 'draft'"/>
+
+                    <button name="action_set_draft"
+                        type="object"
+                        string="Set to Draft"
+                        invisible="state == 'draft'"/>
+
+                    <button name="action_cancel"
+                        type="object"
+                        string="Cancel"
+                        invisible="state != 'open'"/>
+
+                    <field name="template_id"
+                        placeholder="Apply template..."
+                        options="{'no_create': True}"
+                        invisible="state != 'draft'"/>
+
+                    <field name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,open,cancel"/>
+                </header>
+
+
+                <sheet>
+                    <group string="Basic Information">
+                        <group>
+                            <field name="name"/>
+                            <field name="work_entry_type_id"/>
+                        </group>
+                        <group>
+                            <field name="max_employee"/>
+                        </group>
+                    </group>
+
+                    <group string="Assignment &amp; Schedule" col="2">
+                        <group>
+                            <field name="company_id"/>
+                            <field name="department_id"/>
+                            <field name="job_id"/>
+                        </group>
+
+                        <group >
+                            <field name="date_start"/>
+                            <field name="date_stop"/>
+                        </group>
+                    </group>
+
+                    <group string="Notes">
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="t4_my_time_shift_management_action" model="ir.actions.act_window">
+        <field name="name">Shift Management</field>
+        <field name="res_model">t4.shift</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'calendar', 'view_id': ref('t4_my_time_shift_management_calendar_view')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('t4_my_time_shift_management_list_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('t4_my_time_shift_management_form_view')})
+        ]"/>
+    </record>
+</odoo>

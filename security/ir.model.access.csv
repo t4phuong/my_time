@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_t4_shift_user,access.t4.shift.user,model_t4_shift,base.group_user,1,1,1,1
+access_t4_shift_template_user,access.t4.shift.template.user,model_t4_shift_template,base.group_user,1,1,1,1
+access_t4_shift_registration_user,access.t4.shift.registration.user,model_t4_shift_registration,base.group_user,1,1,1,1

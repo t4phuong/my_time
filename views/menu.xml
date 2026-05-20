@@ -1,0 +1,56 @@
+<odoo>
+    <menuitem id="t4_my_time_root_menu"
+              name="My Schedule"
+              sequence="10"/>
+
+    
+    <!-- Employee: Open Shifts -->
+    <menuitem id="t4_my_time_my_shift_menu"
+              name="My Shifts"
+              parent="t4_my_time_root_menu"
+              sequence="10"/>
+
+    <menuitem id="t4_my_time_shift_registrations_menu"
+              name="Open Shifts"
+              parent="t4_my_time_my_shift_menu"
+              action="t4_my_time_shift_registrations_action"
+              sequence="10"/>
+
+    <!-- Manager: Shift Registration Management -->
+    <menuitem id="t4_my_time_management_menu"
+              name="Management"
+              parent="t4_my_time_root_menu"
+              sequence="50"/>
+
+    <menuitem id="t4_my_time_shift_management_menu"
+              name="Shift Management"
+              parent="t4_my_time_management_menu"
+              action="t4_my_time_shift_management_action"
+              sequence="10"/>
+
+    <menuitem id="t4_my_time_shift_registrations_management_menu"
+              name="Shift Registrations Management"
+              parent="t4_my_time_management_menu"
+              action="t4_my_time_shift_registrations_management_action"
+              sequence="50"/>
+
+
+    <!-- CONFIGURATION -->
+    <menuitem id="t4_my_time_configuration_menu"
+              name="Configuration"
+              parent="t4_my_time_root_menu"
+              sequence="100"/>
+
+    <!-- Shift Config -->
+    <menuitem id="t4_my_time_configuration_shift"
+                name="Shift"
+                parent="t4_my_time_configuration_menu"
+                sequence="50"/>
+
+    <menuitem id="t4_my_time_shift_template_menu"
+                name="Shift Templates"
+                parent="t4_my_time_configuration_shift"
+                action="t4_my_time_shift_template_action"
+                sequence="10"/>
+
+</odoo>
