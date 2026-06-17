@@ -1,0 +1,67 @@
+# =========================
+# ODOO PYTHON CACHE
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# =========================
+# ODOO LOG FILES
+# =========================
+*.log
+odoo.log
+
+# =========================
+# ODOO CONFIG (LOCAL ONLY)
+# =========================
+*.conf
+odoo.conf
+
+# =========================
+# DATABASE FILES (if local dev)
+# =========================
+*.db
+*.sqlite3
+
+# =========================
+# ODOO ADDONS TEMP FILES
+# =========================
+*.pot
+*.po~
+*.mo
+
+# =========================
+# IDE / EDITOR
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS FILES
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# FRONTEND BUILD (if any)
+# =========================
+node_modules/
+dist/
+build/
+
+# =========================
+# ODOO SESSIONS / CACHE
+# =========================
+filestore/
+sessions/
+cache/
+
+# =========================
+# TEST / TEMP FILES
+# =========================
+*.tmp
+*.bak
+*.orig

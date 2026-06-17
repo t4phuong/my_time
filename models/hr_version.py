@@ -21,7 +21,7 @@ class HrVersion(models.Model):
         date_stop = self._to_utc_naive(date_stop)
 
         registrations = self.env["t4.shift.registration"].search([
-            ("employee_id", "=", employee.id),
+            ("employee_id", "in", employee.ids),
             ("shift_id.date_start", "<", date_stop),
             ("shift_id.date_stop", ">", date_start),
             ("state", "=", "approved"),
@@ -34,8 +34,8 @@ class HrVersion(models.Model):
 
             attendance = self.env["hr.attendance"].search([
                 ("employee_id", "=", employee.id),
-                ("check_in", "=", shift.date_start),
-                ("check_out", "=", shift.date_stop),
+                ("check_in", "<=", shift.date_start),
+                ("check_out", ">=", shift.date_stop),
             ], limit=1)
 
             if attendance:
@@ -63,7 +63,7 @@ class HrVersion(models.Model):
             if not employee or not resource:
                 continue
 
-            registrations = self._get_shift_registrations(employee, start_dt, end_dt)
+            registrations = version._get_shift_registrations(employee, start_dt, end_dt)
 
             for registration in registrations:
                 shift = registration.shift_id
@@ -79,22 +79,33 @@ class HrVersion(models.Model):
                     if not shift.date_stop.tzinfo else shift.date_stop
                 )
 
-                vals_list.append(self._make_shift_work_entry_val(
-                    version, employee, shift, shift_start_dt, shift_stop_dt,
-                ))
+                shift_interval = Intervals([(shift_start_dt, shift_stop_dt, shift)], keep_distinct=True)
+
+                vals_list += version._get_shift_work_entry_vals(shift_interval)
 
         return vals_list
+    
+    def _get_shift_work_entry_vals(self, intervals):
+        self.ensure_one()
+        vals = []
 
-    def _make_shift_work_entry_val(self, version, employee, shift, date_start, date_stop):
-        return {
-            "name": "%s: %s" % (shift.work_entry_type_id.name, employee.name),
-            "date_start": date_start.astimezone(pytz.utc).replace(tzinfo=None),
-            "date_stop": date_stop.astimezone(pytz.utc).replace(tzinfo=None),
-            "work_entry_type_id": shift.work_entry_type_id.id,
-            "employee_id": employee.id,
-            "version_id": version.id,
-            "company_id": version.company_id.id,
-        }
+        employee = self.employee_id
+        resource = employee.resource_id
+
+        for interval in intervals:
+            work_entry_type = self._get_interval_work_entry_type(interval)
+            vals += [dict([
+                      ('name', "%s: %s" % (work_entry_type.name, employee.name)),
+                      ('date_start', interval[0].astimezone(pytz.utc).replace(tzinfo=None)),
+                      ('date_stop', interval[1].astimezone(pytz.utc).replace(tzinfo=None)),
+                      ('work_entry_type_id', work_entry_type.id),
+                      ('employee_id', employee.id),
+                      ('version_id', self.id),
+                      ('company_id', self.company_id.id),
+                  ] )]
+            
+        return vals
+
 
     def _get_valid_leave_intervals(self, attendances, interval):
         self.ensure_one()
@@ -128,11 +139,11 @@ class HrVersion(models.Model):
 
         remaining = Intervals([(interval_start, interval_stop, leave)]) - shift_interval
 
-        overlaps = remaining & attendances
+        res = []
+        for start, stop, leave in remaining:
+            res += super()._get_valid_leave_intervals(attendances, (start, stop, leave))
 
-        rec = next(iter(overlaps), None)
-
-        return super()._get_valid_leave_intervals(attendances, (rec[0], rec[1], rec[2])) if rec else super()._get_valid_leave_intervals(attendances, interval)
+        return res
 
 
     def _get_real_attendances(self, attendances, leaves, worked_leaves):
